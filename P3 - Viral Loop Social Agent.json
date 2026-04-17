@@ -1,0 +1,355 @@
+{
+  "name": "P3 - Viral Loop Social Agent",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "04d84190-29d9-4afa-b3d5-e9a55b3d56d3",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "field-001",
+              "name": "theme",
+              "value": "AI tools that boost productivity for remote teams",
+              "type": "string"
+            },
+            {
+              "id": "field-002",
+              "name": "platform",
+              "value": "LinkedIn",
+              "type": "string"
+            },
+            {
+              "id": "field-003",
+              "name": "tone",
+              "value": "professional, inspiring, thought-leadership",
+              "type": "string"
+            },
+            {
+              "id": "field-004",
+              "name": "max_hashtags",
+              "value": 5,
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "c89a2804-d716-4857-9506-69259951574e",
+      "name": "Set Theme Input",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        224,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "Create a viral Instagram post about productivity",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=You are a viral social media copywriter specializing in {{ $json.platform }} content. Theme: {{ $json.theme }} Tone: {{ $json.tone }} Max Hashtags: {{ $json.max_hashtags }}. Write a compelling {{ $json.platform }} post with: 1. A strong hook 2. Clear value proposition 3. 3–5 insights 4. A strong CTA 5. Relevant hashtags (max {{ $json.max_hashtags }}). Format EXACTLY like this: CAPTION: [full post text] HASHTAGS: [hashtag list]"
+            }
+          ]
+        }
+      },
+      "id": "babb70c8-3977-4011-8de6-4f98c779e322",
+      "name": "Chain 1 - Caption + Hashtags",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.4,
+      "position": [
+        384,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "options": {
+          "maxOutputTokens": 512,
+          "temperature": 0.7
+        }
+      },
+      "id": "e1616deb-e688-46b5-865b-3cb843787733",
+      "name": "Gemini - Caption Writer",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        384,
+        224
+      ],
+      "retryOnFail": true,
+      "waitBetweenTries": 5000,
+      "maxTries": 5,
+      "executeOnce": false,
+      "credentials": {
+        "googlePalmApi": {
+          "id": "5BpItqFxZTLBh7LS",
+          "name": "Google Gemini(PaLM) Api account 5"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "Caption: {{ $json.text }}\nTheme: {{ $json.theme }}\nPlatform: {{ $json.platform }}",
+        "messages": {
+          "messageValues": [
+            {
+              "type": "HumanMessagePromptTemplate",
+              "message": "=You are an expert AI image prompt engineer. Based on the caption provided, generate ONE high-quality image prompt. Rules: - Maximum 60 words - Photorealistic, professional quality - Include subject, lighting, color palette, composition, mood - No text in the image - Optimized for square format (Instagram/LinkedIn). Return ONLY the prompt. No explanation."
+            },
+            {
+              "type": "HumanMessagePromptTemplate",
+              "message": "=Caption: {{ $json.text }} Theme: {{ $('Set Theme Input').item.json.theme }} Platform: {{ $('Set Theme Input').item.json.platform }}"
+            }
+          ]
+        }
+      },
+      "id": "4f9708b3-6370-4e53-8151-47b35b8a5f8f",
+      "name": "Chain 2 - Image Prompt Writer",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.4,
+      "position": [
+        880,
+        16
+      ]
+    },
+    {
+      "parameters": {
+        "options": {
+          "maxOutputTokens": 512,
+          "temperature": 0.9
+        }
+      },
+      "id": "2fc6ca03-db09-4b49-b737-f2bf9175b6a1",
+      "name": "Gemini - Image Prompt Writer",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        880,
+        224
+      ],
+      "retryOnFail": true,
+      "waitBetweenTries": 5000,
+      "credentials": {
+        "googlePalmApi": {
+          "id": "5BpItqFxZTLBh7LS",
+          "name": "Google Gemini(PaLM) Api account 5"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.stability.ai/v2beta/stable-image/generate/ultra",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "=Authorization ",
+              "value": "=sk-FpfUdoI41NZ2tMv3jtYDHZEG44RveoXikl5wfPjcvEWBDgYo"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "prompt",
+              "value": "={{ $json.text || 'A professional social media visual about AI productivity for remote teams, photorealistic, modern office lighting, blue and white palette, balanced composition, confident mood, square format' }}"
+            },
+            {
+              "name": "aspect_ratio",
+              "value": "1:1"
+            },
+            {
+              "name": "output_format",
+              "value": "png"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1168,
+        16
+      ],
+      "id": "3691ed6a-daa3-44b5-acba-e7ad96666b83",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "jsCode": "const themeInput = $('Set Theme Input').first().json;\nconst captionChainOutput = $('Chain 1 - Caption + Hashtags').first().json;\nconst imagePromptOutput = $('Chain 2 - Image Prompt Writer').first().json;\nconst incoming = $input.first();\n\nconst rawCaption = captionChainOutput.text || '';\nlet caption = '';\nlet hashtags = '';\n\nconst captionMatch = rawCaption.match(/CAPTION:\\s*([\\s\\S]*?)(?=HASHTAGS:|$)/i);\nconst hashtagMatch = rawCaption.match(/HASHTAGS:\\s*([\\s\\S]*?)$/i);\n\nif (captionMatch) caption = captionMatch[1].trim();\nif (hashtagMatch) hashtags = hashtagMatch[1].trim();\n\nconst fullText = [caption, hashtags].filter(Boolean).join('\\n\\n');\n\nconst binaryKey = incoming.binary ? Object.keys(incoming.binary)[0] : null;\nconst file = binaryKey ? incoming.binary[binaryKey] : null;\nconst mimeType = file?.mimeType || 'image/png';\nconst base64 = file?.data || null;\nconst extension = mimeType.split('/')[1] || 'png';\nconst fileName = file?.fileName || `social-visual.${extension}`;\nconst dataUri = base64 ? `data:${mimeType};base64,${base64}` : null;\n\nreturn [{\n  json: {\n    metadata: {\n      generatedAt: new Date().toISOString(),\n      platform: themeInput.platform,\n      theme: themeInput.theme,\n      tone: themeInput.tone\n    },\n    post: {\n      caption,\n      hashtags,\n      fullText,\n      characterCount: fullText.length\n    },\n    image: {\n      prompt: imagePromptOutput.text || '',\n      mimeType,\n      fileName,\n      dataUri,\n      previewHtml: dataUri ? `<img src=\"${dataUri}\" alt=\"generated image\" style=\"max-width:100%;height:auto;border-radius:12px;\" />` : null\n    },\n    status: {\n      captionGenerated: !!caption,\n      imageGenerated: !!base64,\n      readyToPost: !!(caption && base64)\n    }\n  },\n  binary: incoming.binary\n}];"
+      },
+      "id": "40214760-75fc-4f89-a126-faa94b20fd01",
+      "name": "Prepare Final Output",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1344,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "amount": 3
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        688,
+        16
+      ],
+      "id": "cad3487d-fdb6-4167-8550-8345815f7e74",
+      "name": "Wait",
+      "webhookId": "b55e225c-4430-4abc-aa05-e8d8624f6923"
+    }
+  ],
+  "pinData": {
+    "Manual Trigger": [
+      {
+        "json": {},
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Set Theme Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Theme Input": {
+      "main": [
+        [
+          {
+            "node": "Chain 1 - Caption + Hashtags",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Chain 1 - Caption + Hashtags": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Chain 2 - Image Prompt Writer": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini - Caption Writer": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Chain 1 - Caption + Hashtags",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini - Image Prompt Writer": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Chain 2 - Image Prompt Writer",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Prepare Final Output",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Chain 2 - Image Prompt Writer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "af875f00-4c41-409d-a6dd-3cfc6b1b847d",
+  "meta": {
+    "instanceId": "7966745583d50cb1210cd8041b0817e4ab54c3eaf22487b2c3433d3d07506383"
+  },
+  "id": "sI5Ac1eJGmr4VIhUC5tHS",
+  "tags": [
+    {
+      "updatedAt": "2026-04-07T06:30:01.298Z",
+      "createdAt": "2026-04-07T06:30:01.298Z",
+      "id": "gNlyobKLIaFlJooH",
+      "name": "gemini-ai"
+    },
+    {
+      "updatedAt": "2026-04-07T06:30:01.299Z",
+      "createdAt": "2026-04-07T06:30:01.299Z",
+      "id": "NGzPMujEEPsLhCwb",
+      "name": "social-media"
+    }
+  ]
+}
