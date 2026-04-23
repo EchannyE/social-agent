@@ -3,12 +3,12 @@
   "nodes": [
     {
       "parameters": {},
-      "id": "04d84190-29d9-4afa-b3d5-e9a55b3d56d3",
+      "id": "f5204bf7-ab9a-4c25-81f5-211978cada0b",
       "name": "Manual Trigger",
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [
-        0,
+        32,
         0
       ]
     },
@@ -38,55 +38,55 @@
               "id": "field-004",
               "name": "max_hashtags",
               "value": 5,
-              "type": "number"
+              "type": "string"
             }
           ]
         },
         "options": {}
       },
-      "id": "c89a2804-d716-4857-9506-69259951574e",
+      "id": "ad6c370e-6bf5-40af-b0da-cccfe987f482",
       "name": "Set Theme Input",
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        224,
+        256,
         0
       ]
     },
     {
       "parameters": {
         "promptType": "define",
-        "text": "Create a viral Instagram post about productivity",
+        "text": "Create a complete LinkedIn post about productivity",
         "messages": {
           "messageValues": [
             {
-              "message": "=You are a viral social media copywriter specializing in {{ $json.platform }} content. Theme: {{ $json.theme }} Tone: {{ $json.tone }} Max Hashtags: {{ $json.max_hashtags }}. Write a compelling {{ $json.platform }} post with: 1. A strong hook 2. Clear value proposition 3. 3–5 insights 4. A strong CTA 5. Relevant hashtags (max {{ $json.max_hashtags }}). Format EXACTLY like this: CAPTION: [full post text] HASHTAGS: [hashtag list]"
+              "message": "==You are a senior LinkedIn content strategist and copywriter.\n\nWrite a complete LinkedIn post for the following topic.\n\nTheme: {{ $json.theme }}\nPlatform: {{ $json.platform }}\nTone: {{ $json.tone }}\nMaximum hashtags: {{ $json.max_hashtags }}\n\nRequirements:\n- Write for LinkedIn only\n- Caption length must be 180 to 260 words\n- Start with a strong hook\n- Include a clear value proposition\n- Include 3 insight-rich body paragraphs\n- End with a strong call to action\n- Add exactly {{ $json.max_hashtags }} relevant hashtags\n- Do not use bullet points inside the caption\n- Do not add explanations\n- Do not add markdown\n- Do not shorten the output\n\nReturn ONLY in this exact format:\n\nCAPTION:\n[full LinkedIn post]\n\nHASHTAGS:\n[#tag1 #tag2 #tag3 #tag4 #tag5]"
             }
           ]
         }
       },
-      "id": "babb70c8-3977-4011-8de6-4f98c779e322",
+      "id": "ec344bfb-cdad-461e-9ce6-87fd26d8d9ca",
       "name": "Chain 1 - Caption + Hashtags",
       "type": "@n8n/n8n-nodes-langchain.chainLlm",
       "typeVersion": 1.4,
       "position": [
-        384,
+        416,
         0
       ]
     },
     {
       "parameters": {
         "options": {
-          "maxOutputTokens": 512,
+          "maxOutputTokens": 1024,
           "temperature": 0.7
         }
       },
-      "id": "e1616deb-e688-46b5-865b-3cb843787733",
+      "id": "89cf2648-9089-49e2-acb1-ceed16fff51d",
       "name": "Gemini - Caption Writer",
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1,
       "position": [
-        384,
+        416,
         224
       ],
       "retryOnFail": true,
@@ -95,8 +95,8 @@
       "executeOnce": false,
       "credentials": {
         "googlePalmApi": {
-          "id": "5BpItqFxZTLBh7LS",
-          "name": "Google Gemini(PaLM) Api account 5"
+          "id": "1U4bcWC8muMRgeyL",
+          "name": "Google Gemini(PaLM) Api account"
         }
       },
       "onError": "continueRegularOutput"
@@ -118,36 +118,36 @@
           ]
         }
       },
-      "id": "4f9708b3-6370-4e53-8151-47b35b8a5f8f",
+      "id": "c6b25ea0-19d4-44c7-8090-e87d7a7bc5fb",
       "name": "Chain 2 - Image Prompt Writer",
       "type": "@n8n/n8n-nodes-langchain.chainLlm",
       "typeVersion": 1.4,
       "position": [
-        880,
+        912,
         16
       ]
     },
     {
       "parameters": {
         "options": {
-          "maxOutputTokens": 512,
+          "maxOutputTokens": 1024,
           "temperature": 0.9
         }
       },
-      "id": "2fc6ca03-db09-4b49-b737-f2bf9175b6a1",
+      "id": "92228736-6bf7-40ce-a9a2-6a781598b5f8",
       "name": "Gemini - Image Prompt Writer",
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1,
       "position": [
-        880,
+        912,
         224
       ],
       "retryOnFail": true,
       "waitBetweenTries": 5000,
       "credentials": {
         "googlePalmApi": {
-          "id": "5BpItqFxZTLBh7LS",
-          "name": "Google Gemini(PaLM) Api account 5"
+          "id": "1U4bcWC8muMRgeyL",
+          "name": "Google Gemini(PaLM) Api account"
         }
       },
       "onError": "continueRegularOutput"
@@ -160,8 +160,12 @@
         "headerParameters": {
           "parameters": [
             {
-              "name": "=Authorization ",
-              "value": "=sk-FpfUdoI41NZ2tMv3jtYDHZEG44RveoXikl5wfPjcvEWBDgYo"
+              "name": "Authorization",
+              "value": "=sk-1UKFS7Nfqi9KZd06UXNTujLOAMK0fj5AXpmHbePWUm6OKh01"
+            },
+            {
+              "name": "Accept",
+              "value": "image/*"
             }
           ]
         },
@@ -194,50 +198,39 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        1168,
+        1200,
         16
       ],
-      "id": "3691ed6a-daa3-44b5-acba-e7ad96666b83",
+      "id": "793f7853-6fbe-4dd9-83c1-2825c7162df6",
       "name": "HTTP Request"
     },
     {
       "parameters": {
-        "jsCode": "const themeInput = $('Set Theme Input').first().json;\nconst captionChainOutput = $('Chain 1 - Caption + Hashtags').first().json;\nconst imagePromptOutput = $('Chain 2 - Image Prompt Writer').first().json;\nconst incoming = $input.first();\n\nconst rawCaption = captionChainOutput.text || '';\nlet caption = '';\nlet hashtags = '';\n\nconst captionMatch = rawCaption.match(/CAPTION:\\s*([\\s\\S]*?)(?=HASHTAGS:|$)/i);\nconst hashtagMatch = rawCaption.match(/HASHTAGS:\\s*([\\s\\S]*?)$/i);\n\nif (captionMatch) caption = captionMatch[1].trim();\nif (hashtagMatch) hashtags = hashtagMatch[1].trim();\n\nconst fullText = [caption, hashtags].filter(Boolean).join('\\n\\n');\n\nconst binaryKey = incoming.binary ? Object.keys(incoming.binary)[0] : null;\nconst file = binaryKey ? incoming.binary[binaryKey] : null;\nconst mimeType = file?.mimeType || 'image/png';\nconst base64 = file?.data || null;\nconst extension = mimeType.split('/')[1] || 'png';\nconst fileName = file?.fileName || `social-visual.${extension}`;\nconst dataUri = base64 ? `data:${mimeType};base64,${base64}` : null;\n\nreturn [{\n  json: {\n    metadata: {\n      generatedAt: new Date().toISOString(),\n      platform: themeInput.platform,\n      theme: themeInput.theme,\n      tone: themeInput.tone\n    },\n    post: {\n      caption,\n      hashtags,\n      fullText,\n      characterCount: fullText.length\n    },\n    image: {\n      prompt: imagePromptOutput.text || '',\n      mimeType,\n      fileName,\n      dataUri,\n      previewHtml: dataUri ? `<img src=\"${dataUri}\" alt=\"generated image\" style=\"max-width:100%;height:auto;border-radius:12px;\" />` : null\n    },\n    status: {\n      captionGenerated: !!caption,\n      imageGenerated: !!base64,\n      readyToPost: !!(caption && base64)\n    }\n  },\n  binary: incoming.binary\n}];"
+        "jsCode": "const themeInput = $('Set Theme Input').first().json;\nconst captionChainOutput = $('Chain 1 - Caption + Hashtags').first().json;\nconst imagePromptOutput = $('Chain 2 - Image Prompt Writer').first().json;\nconst incoming = $input.first();\n\nconst rawCaption = String(captionChainOutput.text || '').trim();\n\nlet caption = '';\nlet hashtags = '';\n\n// Primary parsing\nconst captionMatch = rawCaption.match(/CAPTION:\\s*([\\s\\S]*?)(?:HASHTAGS:|$)/i);\nconst hashtagMatch = rawCaption.match(/HASHTAGS:\\s*([\\s\\S]*)$/i);\n\nif (captionMatch) caption = captionMatch[1].trim();\nif (hashtagMatch) hashtags = hashtagMatch[1].trim();\n\n// Fallback 1: handle bold labels or missing exact spacing\nif (!caption) {\n  const altCaptionMatch = rawCaption.match(/\\*{0,2}CAPTION\\*{0,2}\\s*:?\\s*([\\s\\S]*?)(?:\\*{0,2}HASHTAGS\\*{0,2}\\s*:|$)/i);\n  if (altCaptionMatch) caption = altCaptionMatch[1].trim();\n}\n\nif (!hashtags) {\n  const altHashtagMatch = rawCaption.match(/\\*{0,2}HASHTAGS\\*{0,2}\\s*:?\\s*([\\s\\S]*)$/i);\n  if (altHashtagMatch) hashtags = altHashtagMatch[1].trim();\n}\n\n// Fallback 2: extract hashtags from anywhere in output\nif (!hashtags) {\n  const foundTags = rawCaption.match(/#[A-Za-z0-9_]+/g);\n  if (foundTags && foundTags.length) {\n    hashtags = foundTags.join(' ');\n  }\n}\n\n// Fallback 3: if no caption label was found, use full output minus hashtags\nif (!caption) {\n  caption = rawCaption.replace(/#[A-Za-z0-9_]+/g, '').replace(/HASHTAGS?:?/gi, '').trim();\n}\n\n// Clean caption\ncaption = caption.replace(/\\n{3,}/g, '\\n\\n').trim();\nhashtags = hashtags.replace(/\\n+/g, ' ').trim();\n\nconst fullText = [caption, hashtags].filter(Boolean).join('\\n\\n');\n\nconst binaryKey = incoming.binary ? Object.keys(incoming.binary)[0] : null;\nconst file = binaryKey ? incoming.binary[binaryKey] : null;\nconst mimeType = file?.mimeType || '';\nconst base64 = file?.data || null;\nconst isImage = mimeType.startsWith('image/');\nconst extension = isImage ? (mimeType.split('/')[1] || 'png') : 'bin';\nconst fileName = file?.fileName || `social-visual.${extension}`;\nconst dataUri = (base64 && isImage) ? `data:${mimeType};base64,${base64}` : null;\n\nconst captionValid = caption.length >= 180;\nconst hashtagsValid = hashtags.includes('#');\n\nreturn [{\n  json: {\n    metadata: {\n      generatedAt: new Date().toISOString(),\n      platform: themeInput.platform,\n      theme: themeInput.theme,\n      tone: themeInput.tone,\n      rawCaptionOutput: rawCaption\n    },\n    post: {\n      caption,\n      hashtags,\n      fullText,\n      characterCount: fullText.length\n    },\n    image: {\n      prompt: imagePromptOutput.text || '',\n      mimeType,\n      fileName,\n      dataUri,\n      previewHtml: dataUri ? `<img src=\"${dataUri}\" alt=\"generated image\" style=\"max-width:100%;height:auto;border-radius:12px;\" />` : null\n    },\n    status: {\n      captionGenerated: !!caption,\n      hashtagsGenerated: !!hashtags,\n      captionValid,\n      hashtagsValid,\n      imageGenerated: !!(base64 && isImage),\n      readyToPost: !!(captionValid && hashtagsValid && base64 && isImage)\n    }\n  },\n  binary: isImage ? incoming.binary : undefined\n}];"
       },
-      "id": "40214760-75fc-4f89-a126-faa94b20fd01",
+      "id": "7ffb32f9-def3-4a2d-a11c-fbb034d3332f",
       "name": "Prepare Final Output",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1344,
+        1376,
         0
       ]
     },
     {
-      "parameters": {
-        "amount": 3
-      },
+      "parameters": {},
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1.1,
       "position": [
-        688,
+        720,
         16
       ],
-      "id": "cad3487d-fdb6-4167-8550-8345815f7e74",
+      "id": "83f9d7ab-9c89-4861-99e7-9bbc4238b481",
       "name": "Wait",
-      "webhookId": "b55e225c-4430-4abc-aa05-e8d8624f6923"
+      "webhookId": "6898672f-a4a0-48ad-a9d4-dd90f975d69b"
     }
   ],
-  "pinData": {
-    "Manual Trigger": [
-      {
-        "json": {},
-        "pairedItem": {
-          "item": 0
-        }
-      }
-    ]
-  },
+  "pinData": {},
   "connections": {
     "Manual Trigger": {
       "main": [
@@ -331,25 +324,13 @@
   "active": false,
   "settings": {
     "executionOrder": "v1",
+    "binaryMode": "separate",
     "availableInMCP": false
   },
-  "versionId": "af875f00-4c41-409d-a6dd-3cfc6b1b847d",
+  "versionId": "0f095330-ee6f-446b-b7c2-84d0d1d30e59",
   "meta": {
-    "instanceId": "7966745583d50cb1210cd8041b0817e4ab54c3eaf22487b2c3433d3d07506383"
+    "instanceId": "d0ae271306300385c329e5909e35401bae8dd64083df00889c8c9e7418cc8775"
   },
-  "id": "sI5Ac1eJGmr4VIhUC5tHS",
-  "tags": [
-    {
-      "updatedAt": "2026-04-07T06:30:01.298Z",
-      "createdAt": "2026-04-07T06:30:01.298Z",
-      "id": "gNlyobKLIaFlJooH",
-      "name": "gemini-ai"
-    },
-    {
-      "updatedAt": "2026-04-07T06:30:01.299Z",
-      "createdAt": "2026-04-07T06:30:01.299Z",
-      "id": "NGzPMujEEPsLhCwb",
-      "name": "social-media"
-    }
-  ]
-}
+  "id": "rzP8P8nRKVnlVkLZ",
+  "tags": []
+      }
