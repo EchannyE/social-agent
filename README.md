@@ -75,30 +75,10 @@ A JavaScript code node:
 - Converts the image to base64
 - Returns a structured JSON response
 
-## Output Example
+## Workflow Architecture
 
-```json
-{
-  "metadata": {
-    "platform": "LinkedIn",
-    "theme": "AI tools for productivity",
-    "tone": "professional"
-  },
-  "post": {
-    "caption": "...",
-    "hashtags": "...",
-    "fullText": "...",
-    "characterCount": 280
-  },
-  "image": {
-    "prompt": "...",
-    "dataUri": "data:image/png;base64,..."
-  },
-  "status": {
-    "readyToPost": true
-  }
-}
-```
+![Workflow Diagram](./assets/Screenshots.jpg)
+
 
 ## Tech Stack
 
@@ -134,7 +114,8 @@ A JavaScript code node:
 Update the request header with your API key:
 
 ```text
-Authorization: Bearer YOUR_STABILITY_API_KEY
+Authorization
+YOUR_STABILITY_API_KEY
 ```
 
 ## Troubleshooting
@@ -163,7 +144,7 @@ Authorization: Bearer YOUR_STABILITY_API_KEY
 
 ## Roadmap
 
-- Slack-based approval flow
+- Slack-based approval flow(human in the loop)
 - Automatic posting to LinkedIn and Instagram
 - Content performance tracking
 - Multi-variant A/B generation
