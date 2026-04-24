@@ -75,6 +75,78 @@ A JavaScript code node:
 - Converts the image to base64
 - Returns a structured JSON response
 
+- # API Documentation
+
+The Viral Loop Social Agent integrates external AI services through API communication to automate both text generation and visual content creation. Two primary APIs are used in this workflow: the Google Gemini API for caption generation and prompt engineering, and the Stability AI API for image generation. These services are orchestrated using n8n workflow automation.
+
+---
+
+## Google Gemini API
+## Google Gemini API
+
+### Purpose
+
+Used for:
+- LinkedIn caption generation
+- Hashtag generation
+- Image prompt engineering
+
+### Model Used
+
+`gemini-2.5-flash`
+
+### Node Type
+
+`@n8n/n8n-nodes-langchain.lmChatGoogleGemini`
+
+### Configuration Details
+
+| Parameter | Value |
+|---|---|
+| Model | gemini-2.5-flash |
+| Temperature (Caption Writer) | 0.7 |
+| Temperature (Image Prompt Writer) | 0.9 |
+| Max Output Tokens | 1024 |
+
+### Input Example
+
+```json
+{
+  "theme": "AI tools that boost productivity for remote teams",
+  "platform": "LinkedIn",
+  "tone": "professional, inspiring, thought-leadership",
+  "max_hashtags": 5
+}
+
+## Stability AI 
+
+## Overview
+
+The Viral Loop Social Agent uses Stability AI to generate high-quality, photorealistic images that accompany the AI-generated LinkedIn post. After Google Gemini creates the caption and image prompt, the prompt is sent to Stability AI for image generation. The returned image is processed inside n8n and included in the final structured output.
+
+---
+
+### Purpose
+
+Stability AI is used for:
+
+- AI-powered image generation
+- Professional social media visual creation
+- LinkedIn and Instagram optimized square-format images
+- Photorealistic content generation for marketing posts
+
+---
+
+### API Endpoint
+
+```http
+POST https://api.stability.ai/v2beta/stable-image/generate/ultra
+
+### Required header
+Authorization
+YOUR_STABILITY_API_KEY
+
+
 ## Workflow Architecture
 
 ![Workflow architecture](assets/workflow.jpg)
