@@ -77,9 +77,6 @@ A JavaScript code node:
 
 ## Workflow Architecture
 
-![Workflow Diagram](./assets/Screenshots.jpg)
-
-
 ## Tech Stack
 
 - n8n for workflow orchestration
