@@ -117,6 +117,7 @@ Used for:
   "tone": "professional, inspiring, thought-leadership",
   "max_hashtags": 5
 }
+```
 
 ---
 
@@ -143,11 +144,15 @@ Stability AI is used for:
 
 ```http
 POST https://api.stability.ai/v2beta/stable-image/generate/ultra
+```
 
 ### Endpoint
 
 ```http
 POST https://api.stability.ai/v2beta/stable-image/generate/ultra
+---
+
+```
 
 ## Workflow Architecture
 
