@@ -70,12 +70,24 @@ The generated prompt is sent to Stability AI to produce:
 
 A JavaScript code node:
 
-- Extracts the caption and hashtags
+- Extracts the caption and hashtags 
 - Builds the final post text
 - Converts the image to base64
 - Returns a structured JSON response
 
 ## Workflow Architecture
+
+![Workflow architecture](assets/workflow.jpg)
+
+## Image Gallery
+
+![Final output](assets/final%20output.jpg)
+
+![Image 1](assets/image.jpg)
+
+![Image 2](assets/image%20(2).jpg)
+
+![Post preview](assets/post.jpg)
 
 ## Tech Stack
 
