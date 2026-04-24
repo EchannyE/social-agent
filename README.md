@@ -118,7 +118,9 @@ Used for:
   "max_hashtags": 5
 }
 
-## Stability AI 
+---
+
+# Stability AI API 
 
 ## Overview
 
@@ -126,7 +128,7 @@ The Viral Loop Social Agent uses Stability AI to generate high-quality, photorea
 
 ---
 
-### Purpose
+## Purpose
 
 Stability AI is used for:
 
@@ -137,15 +139,15 @@ Stability AI is used for:
 
 ---
 
-### API Endpoint
+## API Endpoint
 
 ```http
 POST https://api.stability.ai/v2beta/stable-image/generate/ultra
 
-### Required header
-Authorization
-YOUR_STABILITY_API_KEY
+### Endpoint
 
+```http
+POST https://api.stability.ai/v2beta/stable-image/generate/ultra
 
 ## Workflow Architecture
 
